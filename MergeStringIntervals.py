@@ -8,19 +8,29 @@ class Solution:
             max_value = int(splited[1])
             for j in intervals:
                 j_splited = j.split('-')
-                updated_min_value = j_min_value = int(j_splited[0])
-                updated_max_value = j_max_value = int(j_splited[1])
-                if min_value is j_min_value and max_value is j_max_value:
+                updating_min_value = int(j_splited[0])
+                updating_max_value = int(j_splited[1])
+                if min_value is updating_min_value and max_value is updating_max_value:
                     continue
 
-                j_range = range(j_min_value, j_max_value)
-                if min_value in j_range:
-                    updated_min_value = min_value
+                if max_value < updating_min_value:
+                    str_interval = str(updating_min_value) + '-' + str(updating_max_value)
+                    if str_interval not in ranges:
+                        ranges.append(str_interval)
 
-                if max_value in j_range:
-                    updated_max_value = max_value
+                    continue
 
-                ranges.append(str(updated_min_value) + '-' + str(updated_max_value))
+                j_range = range(updating_min_value, updating_max_value)
+                if min_value in j_range or max_value in j_range:
+                    updating_min_value = min_value
+                    if max_value > updating_max_value:
+                        updating_max_value = max_value
+                else:
+                    continue
+
+                str_interval = str(updating_min_value) + '-' + str(updating_max_value)
+                if str_interval not in ranges:
+                    ranges.append(str_interval)
         return ranges
 
 
