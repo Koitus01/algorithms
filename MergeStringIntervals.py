@@ -1,41 +1,37 @@
 class Solution:
     def merge_intervals(self, intervals: list):
-        #intervals.sort()
-        global_min = 0
-        global_max = 0
-        previous_ranges = []
+        if len(intervals) == 0:
+            return []
+
+        if len(intervals) == 1:
+            return intervals[0]
+
+        for key, value in enumerate(intervals):
+            intervals[key] = self.split_str(value)
+
+        intervals.sort()
         result = []
+        global_min = intervals[0][0]
+        global_max = 0
 
-        for interval in intervals:
-            [i_min, i_max] = self.split_str(interval)
-            result.append([i_min, i_max])
+        for key, value in enumerate(intervals):
+            if key == 0:
+                continue
 
-            for index, re in enumerate(result):
-                #[re_min, re_max] = self.split_str(re)
-                [re_min, re_max] = [re[0], re[1]]
-                if i_min == re_min and re_max == i_max:
-                    continue
+            v_min = value[0]
+            v_max = value[1]
+            previous_min = intervals[key - 1][0]
+            previous_max = intervals[key - 1][1]
 
-                if re_min <= i_min <= re_max or i_min <= re_min <= i_max:
-                    local_min = min(i_min, re_min)
-                    local_max = max(i_max, re_max)
-                    global_min = min(local_min, global_min)
-                    global_max = max(local_max, global_max)
+            if v_min > previous_max and v_min != previous_min:
+                result.append([global_min, global_max])
+                global_min = v_min
+                result.append([v_min, v_max])
 
-                    if local_min == re_min and local_max == re_max:
-                        del result[index]
-                        continue
-                    if local_min <= re_min <= local_max:
-                        del result[index]
-                        continue
-                    if local_min >= re_min and re_max <= local_max:
-                        del result[index]
-                        continue
+            global_max = max(previous_max, v_max)
 
-            # if i_min > global_max:
-            #     united_str = self.union_str(i_min, i_max)
-            #     result.append(united_str)
-            #     global_max = i_min
+        if len(result) == 0:
+            result.append([global_min, global_max])
 
         return result
 
@@ -51,10 +47,10 @@ class Solution:
 
 
 cases = [
-    #['1-4', '0-4'],
-    ['2-4', '7-10', '3-5'],
+    ['3-20', '1-5', '1-10'],
     ['1-3', '3-5', '6-7', '2-4'],
-    ['1-5', '1-10', '3-20'],
+    ['2-4', '7-10', '3-5', '2-3', '1-5'],
+    ['1-4', '0-4'],
     ['1-5', '2-4', '7-9'],
     ['2-5', '7-10'],
     ['1-3', '2-6', '8-10', '15-18'],
