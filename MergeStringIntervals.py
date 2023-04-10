@@ -1,3 +1,6 @@
+# strings in cases because of concrete task feature
+# similar to https://leetcode.com/problems/merge-intervals/description/
+
 class Solution:
     def merge_intervals(self, intervals: list):
         if len(intervals) == 0:
@@ -11,27 +14,15 @@ class Solution:
 
         intervals.sort()
         result = []
-        global_min = intervals[0][0]
-        global_max = 0
 
-        for key, value in enumerate(intervals):
-            if key == 0:
-                continue
-
+        for value in intervals:
             v_min = value[0]
             v_max = value[1]
-            previous_min = intervals[key - 1][0]
-            previous_max = intervals[key - 1][1]
 
-            if v_min > previous_max and v_min != previous_min:
-                result.append([global_min, global_max])
-                global_min = v_min
-                result.append([v_min, v_max])
-
-            global_max = max(previous_max, v_max)
-
-        if len(result) == 0:
-            result.append([global_min, global_max])
+            if result and result[-1][0] <= v_min <= result[-1][1]:
+                result[-1][1] = max(v_max, result[-1][1])
+            else:
+                result.append(value)
 
         return result
 
@@ -47,11 +38,13 @@ class Solution:
 
 
 cases = [
+    ['1-5', '2-4', '7-9'],
     ['3-20', '1-5', '1-10'],
+
     ['1-3', '3-5', '6-7', '2-4'],
     ['2-4', '7-10', '3-5', '2-3', '1-5'],
     ['1-4', '0-4'],
-    ['1-5', '2-4', '7-9'],
+
     ['2-5', '7-10'],
     ['1-3', '2-6', '8-10', '15-18'],
 ]
