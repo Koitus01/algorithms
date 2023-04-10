@@ -1,41 +1,41 @@
 class Solution:
     def mergeIntervals(self, intervals: list):
+        local_min = 0
+        local_max = 0
         ranges = []
-        for i in intervals:
-            splited = i.split('-')
+        enumerate_intervals = enumerate(intervals)
 
-            min_value = int(splited[0])
-            max_value = int(splited[1])
-            for j in intervals:
-                j_splited = j.split('-')
-                updating_min_value = int(j_splited[0])
-                updating_max_value = int(j_splited[1])
-                if min_value is updating_min_value and max_value is updating_max_value:
+        for interval in intervals:
+            split = interval.split('-')
+            i_min_value = int(split[0])
+            i_max_value = int(split[1])
+
+            for interval2 in intervals:
+                split = interval2.split('-')
+                i2_min_value = int(split[0])
+                i2_max_value = int(split[1])
+                i2_range = range(i2_min_value, i2_max_value)
+                if i2_min_value == i_min_value and i2_max_value == i_max_value:
                     continue
 
-                if max_value < updating_min_value:
-                    str_interval = str(updating_min_value) + '-' + str(updating_max_value)
-                    if str_interval not in ranges:
-                        ranges.append(str_interval)
-
+                if i_min_value not in i2_range and i_max_value not in i2_range:
+                    str_value = str(i2_min_value) + '-' + str(i2_max_value)
+                    if str_value not in ranges:
+                        ranges.append(str_value)
                     continue
 
-                j_range = range(updating_min_value, updating_max_value)
-                if min_value in j_range or max_value in j_range:
-                    updating_min_value = min_value
-                    if max_value > updating_max_value:
-                        updating_max_value = max_value
-                else:
-                    continue
+                local_min = min(i_min_value, i2_min_value)
+                local_max = max(i_max_value, i2_max_value)
+                str_value = str(local_min) + '-' + str(local_max)
+                if str_value not in ranges:
+                    ranges.append(str_value)
 
-                str_interval = str(updating_min_value) + '-' + str(updating_max_value)
-                if str_interval not in ranges:
-                    ranges.append(str_interval)
         return ranges
 
 
 cases = [
     ['2-4', '7-10', '3-5'],
+    ['1-3', '3-5', '6-7', '2-4'],
     ['1-5', '1-10', '1-20'],
     ['1-5', '2-4', '7-9'],
     ['2-5', '7-10']
