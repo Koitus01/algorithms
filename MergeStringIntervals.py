@@ -9,26 +9,29 @@ class Solution:
             split = interval.split('-')
             i_min_value = int(split[0])
             i_max_value = int(split[1])
+            value_updated = False
 
-            for interval2 in intervals:
-                split = interval2.split('-')
+            for index, r in enumerate(ranges):
+                split = r.split('-')
                 i2_min_value = int(split[0])
                 i2_max_value = int(split[1])
                 i2_range = range(i2_min_value, i2_max_value)
+
                 if i2_min_value == i_min_value and i2_max_value == i_max_value:
                     continue
 
                 if i_min_value not in i2_range and i_max_value not in i2_range:
-                    str_value = str(i2_min_value) + '-' + str(i2_max_value)
-                    if str_value not in ranges:
-                        ranges.append(str_value)
                     continue
 
                 local_min = min(i_min_value, i2_min_value)
                 local_max = max(i_max_value, i2_max_value)
                 str_value = str(local_min) + '-' + str(local_max)
                 if str_value not in ranges:
-                    ranges.append(str_value)
+                    value_updated = True
+                    ranges[index] = str_value
+
+            if value_updated is not True:
+                ranges.append(interval)
 
         return ranges
 
